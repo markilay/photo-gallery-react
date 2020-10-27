@@ -11,16 +11,26 @@ import Loader from "./components/Loader";
 function App() {
   const [photos, setPhotos] = useState([]);
   const [query, setQuery] = useState("");
-  const [pageNumber, setPageNumber] = useState(1);
   const [hasMorePages, setHasMorePages] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
     fetchData();
   }, [query]);
 
+  useEffect(() => {
+    hasMorePages
+      ? setPageNumber((prevPageNumber) => prevPageNumber + 1)
+      : setPageNumber(1);
+  }, [hasMorePages]);
+
   const fetchData = async () => {
     const api = "https://api.unsplash.com/search/photos";
     const accessKey = process.env.REACT_APP_ACCESSKEY;
+
+    hasMorePages
+      ? setPageNumber((prevPageNumber) => prevPageNumber + 1)
+      : setPageNumber(1);
 
     try {
       const res = await fetch(
@@ -29,9 +39,9 @@ function App() {
       console.log(res);
       const data = await res.json();
       console.log(data);
-      setPhotos([...photos, ...data.results]);
       setHasMorePages(data.total_pages > 1);
-      hasMorePages ? setPageNumber(pageNumber + 1) : setPageNumber(1);
+
+      setPhotos([...photos, ...data.results]);
     } catch (error) {
       console.log(error);
     }
