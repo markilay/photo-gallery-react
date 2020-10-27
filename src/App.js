@@ -15,20 +15,20 @@ function App() {
   const [hasMorePages, setHasMorePages] = useState(false);
 
   useEffect(() => {
-    fetchData(query);
-  }, [query, hasMorePages]);
+    fetchData();
+  }, [query]);
 
-  const fetchData = async (queryWord) => {
+  const fetchData = async () => {
     const api = "https://api.unsplash.com/search/photos";
     const accessKey = process.env.REACT_APP_ACCESSKEY;
 
     try {
       const res = await fetch(
-        `${api}?page=${pageNumber}&query=${queryWord}&per_page=10&client_id=${accessKey}`
+        `${api}?page=${pageNumber}&query=${query}&per_page=10&client_id=${accessKey}`
       );
       console.log(res);
       const data = await res.json();
-
+      console.log(data);
       setPhotos([...photos, ...data.results]);
       setHasMorePages(data.total_pages > 1);
       hasMorePages ? setPageNumber(pageNumber + 1) : setPageNumber(1);
@@ -44,7 +44,7 @@ function App() {
       <DataError />
       <InfiniteScroll
         dataLength={photos.length}
-        next={() => fetchData(query)}
+        next={fetchData}
         hasMore={hasMorePages}
         loader={<Loader />}
       >
