@@ -100,9 +100,11 @@
     display: block;
   }
 
+  .loader {
+    position: relative;
+    text-align: center;
+  }
   .gallery-container {
-    width: 100%;
-    min-height: 90vh;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-auto-columns: 300px;

@@ -16,14 +16,13 @@ function App() {
 
   useEffect(() => {
     fetchData(query);
-  }, [query]);
+  }, [query, hasMorePages]);
 
   const fetchData = async (queryWord) => {
     const api = "https://api.unsplash.com/search/photos";
     const accessKey = process.env.REACT_APP_ACCESSKEY;
 
     try {
-      console.log(query);
       const res = await fetch(
         `${api}?page=${pageNumber}&query=${queryWord}&per_page=10&client_id=${accessKey}`
       );
@@ -31,10 +30,8 @@ function App() {
       const data = await res.json();
 
       setPhotos([...photos, ...data.results]);
-      console.log(data.total_pages);
-      setHasMorePages(data.total_pages > 1)
-        ? setPageNumber(pageNumber + 1)
-        : setPageNumber(1);
+      setHasMorePages(data.total_pages > 1);
+      hasMorePages ? setPageNumber(pageNumber + 1) : setPageNumber(1);
     } catch (error) {
       console.log(error);
     }
@@ -47,7 +44,7 @@ function App() {
       <DataError />
       <InfiniteScroll
         dataLength={photos.length}
-        next={fetchData}
+        next={() => fetchData(query)}
         hasMore={hasMorePages}
         loader={<Loader />}
       >
