@@ -14,15 +14,13 @@ $click: scale(0.9);
 }
 
 // LOADER
-.lds-ellipsis.open {
-  opacity: 1;
-}
+
 .lds-ellipsis {
+  text-align: center;
   display: inline-block;
   position: relative;
   width: 80px;
   height: 80px;
-  opacity: 0;
   transition: all 0.5s;
 }
 .lds-ellipsis div {
@@ -73,4 +71,9 @@ $click: scale(0.9);
   100% {
     transform: translate(24px, 0);
   }
+}
+
+//INFINITE SCROLL COMPONENT
+.infinite-scroll-component__outerdiv {
+  width: 100%;
 }
