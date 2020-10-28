@@ -10,12 +10,15 @@ import Loader from "./components/Loader";
 
 function App() {
   const [photos, setPhotos] = useState([]);
+  const [tags, setTags] = useState([]);
   const [query, setQuery] = useState("");
   const [hasMorePages, setHasMorePages] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
-    fetchData();
+    if (query) {
+      fetchData();
+    }
   }, [query]);
 
   const fetchData = async () => {
@@ -36,17 +39,66 @@ function App() {
       } else {
         setPageNumber(1);
       }
-
+      getTags(data.results);
       setPhotos([...photos, ...data.results]);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const getTags = (array) => {
+    const pickTitleNames = array
+      .map((photo, i) => {
+        const titles = photo.tags
+          .map((tag) => tag)
+          .map((item) => {
+            const valuesArray = Object.entries(item).filter(
+              ([key]) => key === "title"
+            );
+            return valuesArray;
+          })
+          .join()
+          .split(",")
+          .filter((el) => el !== "title");
+        return titles;
+      })
+      .join()
+      .split(",");
+    const namesForTags = [...new Set(pickTitleNames)];
+
+    let threeUniqueTags = [];
+    let lastTag = "";
+
+    function randomTags() {
+      const randomNumber = Math.floor(Math.random() * namesForTags.length);
+      let curTag = namesForTags[randomNumber];
+
+      if (curTag === lastTag) {
+        return randomTags();
+      }
+
+      lastTag = curTag;
+      threeUniqueTags.push(curTag);
+    }
+    for (let i = 0; i < 3; i++) {
+      randomTags();
+    }
+    return setTags(threeUniqueTags);
+  };
+
   return (
     <div className="App">
       <Header />
-      <Search query={query} setQuery={setQuery} />
+      <Search
+        photos={photos}
+        setPhotos={setPhotos}
+        query={query}
+        setQuery={setQuery}
+        pageNumber={pageNumber}
+        setPageNumber={setPageNumber}
+        tags={tags}
+        setTags={setTags}
+      />
       <DataError />
       <InfiniteScroll
         dataLength={photos.length}

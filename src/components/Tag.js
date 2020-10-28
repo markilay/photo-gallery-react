@@ -1,9 +1,14 @@
 import React from "react";
 
-const Tag = () => {
+const Tag = ({ tag, setQuery, setPhotos, setPageNumber }) => {
+  const searchByTag = () => {
+    setPhotos([]);
+    setPageNumber(1);
+    setQuery(tag);
+  };
   return (
-    <a className="tag" href="#">
-      Autumn
+    <a className="tag" href="#" onClick={searchByTag}>
+      {tag}
     </a>
   );
 };
